@@ -1,13 +1,15 @@
 #ifndef BISECCION_REGLA_FALSA_HPP
 #define BISECCION_REGLA_FALSA_HPP
 
+#include "metodos/finder.hpp"
 #include "primitives.hpp"
+#include <algorithm>
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 
-class BiseccionReglaFalsa {
+class BiseccionReglaFalsa : public Finder{
 private:
-    std::unique_ptr<Function> f;
     Number a, b;
 public:
 
@@ -18,6 +20,7 @@ public:
         auto fb = this->f->f(b);
         auto fa = this->f->f(a);
         if( (fb * fa).inner > 0 ){
+            std::cout << fa.inner << " : " << fb.inner << std::endl;
             throw std::runtime_error("rango invalido");
         }
     }

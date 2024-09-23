@@ -1,4 +1,5 @@
 #include "metodos/biseccion_regla_falsa.hpp"
+#include "metodos/metodo_de_biseccion.hpp"
 #include "primitives.hpp"
 #include <cmath>
 #include <iostream>
@@ -337,7 +338,7 @@ public:
 int main(const int argc, const char* argv[]){
     const char* v = argc == 1 ? "2 * x" : argv[1];
     auto f = new GenerativeFunction(v);
-    auto n = BiseccionReglaFalsa(f, -10, 10);
+    auto n = Biseccion(f, 0.1, 10);
     auto root = n.root();
     std::cout << root.inner << std::endl;
 
