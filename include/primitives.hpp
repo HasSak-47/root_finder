@@ -3,14 +3,13 @@
 
 #include <cstdlib>
 class Number{
-protected:
-    double inner = 0.;
 public:
+    double inner = 0.;
     bool is_zero(){
         return inner == 0;
     }
     bool is_really_close_to_zero(){
-        return std::abs(inner) <= 0.00001;
+        return std::abs(inner) < 0.0001 || inner == 0;
     }
     bool is_negative(){
         return inner < 0;
@@ -42,8 +41,8 @@ inline Number& operator/=(Number& lhs, Number rhs){ lhs.inner += rhs.inner; retu
 
 class Function{
 public:
-    ~Function();
-    virtual Number f(Number x);
+    virtual ~Function() {};
+    virtual Number f(Number x) const = 0 ;
 };
 
 #endif
