@@ -3,6 +3,7 @@
 
 #include "primitives.hpp"
 #include <memory>
+#include <stdexcept>
 
 class BiseccionReglaFalsa {
 private:
@@ -14,6 +15,11 @@ public:
         a(a),
         b(b) {
         this->f = std::unique_ptr<Function>(f);
+        auto fb = this->f->f(b);
+        auto fa = this->f->f(a);
+        if( (fb * fa).inner > 0 ){
+            throw std::runtime_error("rango invalido");
+        }
     }
 
     void update_root();

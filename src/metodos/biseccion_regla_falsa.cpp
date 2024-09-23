@@ -4,13 +4,10 @@
 #include <thread>
 
 void BiseccionReglaFalsa::update_root(){
-    std::cout << "a: " << a.inner << " b: " << b.inner << std::endl;
     Number fa = f->f(a);
     Number fb = f->f(b);
-    std::cout << "fa: " << fa.inner << " fb: " << fb.inner << std::endl;
     Number c = a - (fa * (b - a)) / (fb - fa);
     Number fc = f->f(c);
-    std::cout << "c: " << c.inner << " fc: " << fc.inner << std::endl;
     std::cout << std::endl;
 
     using namespace std::chrono;
@@ -23,8 +20,9 @@ void BiseccionReglaFalsa::update_root(){
 }
 
 Number BiseccionReglaFalsa::root(){
-    while( !this->a.is_really_close_to_zero() )
+    while( !this->f->f(this->a).is_really_close_to_zero() ){
         update_root();
+    }
 
     return this->a;
 }

@@ -335,7 +335,7 @@ public:
 
 
 int main(const int argc, const char* argv[]){
-    const char* v = argc == 1 ? "1 + x" : argv[1];
+    const char* v = argc == 1 ? "2 * x" : argv[1];
     auto f = new GenerativeFunction(v);
     auto n = BiseccionReglaFalsa(f, -10, 10);
     auto root = n.root();

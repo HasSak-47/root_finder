@@ -9,7 +9,7 @@ public:
         return inner == 0;
     }
     bool is_really_close_to_zero(){
-        return std::abs(inner) < 0.0001 || inner == 0;
+        return std::abs(inner) < 0.1 || inner == 0;
     }
     bool is_negative(){
         return inner < 0;
