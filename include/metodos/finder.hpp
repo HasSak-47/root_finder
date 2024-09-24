@@ -7,9 +7,13 @@
 class Finder{
 protected:
     std::unique_ptr<Function> f;
+    Number croot;
 public:
     virtual ~Finder(){}
-    virtual Number root() = 0;
+    Finder(Function* f, Number croot): f(f), croot(croot){ }
+
+    virtual void update_root() = 0;
+    virtual Number root();
 };
 
 #endif

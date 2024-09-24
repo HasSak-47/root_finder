@@ -6,11 +6,11 @@
 
 class Biseccion: public Finder{
 protected:
-    Number a, b;
+    Number b;
 public:
 
     Biseccion(Function* f, Number a, Number b):
-        a(a),
+        Finder(f, a),
         b(b) {
         this->f = std::unique_ptr<Function>(f);
         auto fb = this->f->f(b);
@@ -20,8 +20,7 @@ public:
         }
     }
 
-    void update_root();
-    Number root();
+    void update_root() override;
 };
 
 #endif
