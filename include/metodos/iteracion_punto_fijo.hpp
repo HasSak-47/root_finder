@@ -4,9 +4,13 @@
 #include "metodos/finder.hpp"
 #include "primitives.hpp"
 
-class IteracionPuntoFijo : Finder{
+class IteracionPuntoFijo : public Finder{
+private:
 public:
-    IteracionPuntoFijo(Function* f, Number croot): Finder(f, croot){}
+    std::shared_ptr<Function> guess;
+public:
+    IteracionPuntoFijo(Function* f, Function* g, Number croot): Finder(f, croot), guess(g){}
+    IteracionPuntoFijo(std::shared_ptr<Function> f, std::shared_ptr<Function> g, Number croot): Finder(f, croot), guess(g){}
     void update_root() override;
 };
 

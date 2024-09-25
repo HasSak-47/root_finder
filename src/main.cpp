@@ -1,9 +1,15 @@
 #include "metodos/biseccion_regla_falsa.hpp"
+#include "metodos/finder.hpp"
 #include "metodos/metodo_de_biseccion.hpp"
+#include "metodos/newton_raphson.hpp"
+#include "metodos/iteracion_punto_fijo.hpp"
+
 #include "primitives.hpp"
 #include <cmath>
 #include <iostream>
+#include <memory>
 #include <ostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -117,7 +123,7 @@ bool is_operator(char c){
 
 int hiarchy(char k){
     int a = 0;
-    switch (a) {
+    switch (k) {
         case '+':
             a = 0;
             break;
@@ -141,7 +147,7 @@ bool operator_hirachy(char a, char b){
     // PEMBDAS
     int ia = hiarchy(a);
     int ib = hiarchy(b);
-    return ia > ib;
+    return ia < ib;
 }
 
 bool is_open(char c){ return c == '(' || c == '{' || c == '[' ; }
@@ -224,9 +230,10 @@ std::vector<Token> sanatize_and_tokenize(std::string _in){
 
 class GenerativeFunction : public Function{
 private:
-    std::vector<Token> inner;
 public:
+    std::vector<Token> inner;
     ~GenerativeFunction(){}
+    GenerativeFunction(){}
     GenerativeFunction(std::string form){
         auto data = sanatize_and_tokenize(form);
 
@@ -335,12 +342,124 @@ public:
 };
 
 
-int main(const int argc, const char* argv[]){
-    const char* v = argc == 1 ? "2 * x" : argv[1];
-    auto f = new GenerativeFunction(v);
-    auto n = Biseccion(f, 0.1, 10);
-    auto root = n.root();
-    std::cout << root.inner << std::endl;
+std::shared_ptr<GenerativeFunction> get_function(){
+    std::string buffer;
+    std::getline(std::cin, buffer);
+    return std::make_shared<GenerativeFunction>(buffer);
+}
 
+bool go_on(){
+    std::cout << "continuar?[Y/.]";
+    char c;
+    std::cin >> c;
+    return c == 'Y';
+}
+
+std::unique_ptr<Finder> biseccion(std::shared_ptr<Function> func){
+    std::cout << "x1 : ";
+    std::cout << "x2 : ";
+    Number x1 = 0., x2 = 0.;
+    std::cin >> x1.inner >> x2.inner;
+
+    return std::unique_ptr<Finder>(new Biseccion(func, x1, x2));
+}
+
+std::unique_ptr<Finder> regla_falsa(std::shared_ptr<Function> func){
+    std::cout << "x1 : ";
+    std::cout << "x2 : ";
+    Number x1 = 0., x2 = 0.;
+    std::cin >> x1.inner >> x2.inner;
+
+    return std::unique_ptr<Finder>(new BiseccionReglaFalsa(func, x1, x2));
+}
+
+std::unique_ptr<Finder> newton(std::shared_ptr<Function> func){
+    std::cout << "x : ";
+    Number x = 0.;
+    std::cin >> x.inner;
+
+    auto newton = std::shared_ptr<Function>((Function*)new NewtonGuesser(func));
+    return std::unique_ptr<Finder>(new IteracionPuntoFijo(func, newton, x));
+}
+
+std::unique_ptr<Finder> punto_fijo(std::shared_ptr<Function> func){
+    class DumbGuesser : Function{
+    private:
+        std::shared_ptr<Function> original;
+    public:
+        DumbGuesser(std::shared_ptr<Function> original): original(original){ }
+        Number f(Number x) const override{
+            return this->original->f(x) + x;
+        }
+    };
+    std::cout << "Quiere especificar funcion[Y/n]";
+    char specify;
+    std::cin >> specify;
+    std::shared_ptr<Function> guesser = nullptr;
+    if(specify){
+        std::cout << "escriba ecuacion que estimara: ";
+        guesser =std::shared_ptr<Function>( get_function() );
+
+    }
+    else{
+        std::cout << "Usando f(x) + x: ";
+        guesser =std::shared_ptr<Function>( (Function*)new DumbGuesser(func) );
+    }
+    
+    std::cout << "x : ";
+    Number x = 0.;
+    std::cin >> x.inner;
+
+    return std::unique_ptr<Finder>(new IteracionPuntoFijo(func, guesser, x));
+}
+
+std::shared_ptr<Finder> select(std::shared_ptr<GenerativeFunction> func){
+    char opt;
+    std::cin >> opt;
+    switch(opt){
+        case 'a': // Regla Falsa";
+            return regla_falsa(func);
+            break;
+        case 'b': // Punto Fijo";
+            return punto_fijo(func);
+            break;
+        case 'c': // Biseccion";
+            return biseccion(func);
+            break;
+        case 'd': // Newton";
+            return newton(func);
+        default:
+            break;
+    }
+    return nullptr;
+}
+
+
+int main(const int argc, const char* argv[]){
+    bool loop = true;
+    while(loop){
+        try {
+            std::cout << "Escriba formula: ";
+            auto func = get_function();
+
+            std::cout << "Seleccione metodo: " << std::endl;
+            std::cout << "\ta) Regla Falsa" << std::endl;
+            std::cout << "\tb) Punto Fijo" << std::endl;
+            std::cout << "\tc) Biseccion" << std::endl;
+            std::cout << "\td) Newton" << std::endl;
+            auto method = select(func);
+            if(method.get() == nullptr){
+                std::cout << "no eligio opcion";
+                continue;
+            }
+
+                auto root = method->root();
+                std::cout << "raiz aproximada: " << root.inner << std::endl;
+            }
+        catch(std::runtime_error& e) {
+            std::cout << "no se pudo encontrar raiz: " << e.what() << std::endl;
+        }
+        loop = go_on();
+    }
     return 0;
 }

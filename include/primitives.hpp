@@ -45,4 +45,21 @@ public:
     virtual Number f(Number x) const = 0 ;
 };
 
+inline Number df(Function& f, Number x) {
+    Number dx= 0.001;
+    return (f.f(x + dx) - f.f(x) ) / dx;
+};
+
+class Derivative : Function{
+private:
+    Function& original;
+public:
+    Derivative(Function& original): original(original){}
+    ~Derivative() override{};
+    Number f(Number x) const override{
+        return df(original, x);
+    };
+};
+
+
 #endif

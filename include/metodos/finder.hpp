@@ -6,11 +6,12 @@
 
 class Finder{
 protected:
-    std::unique_ptr<Function> f;
+    std::shared_ptr<Function> f;
     Number croot;
 public:
     virtual ~Finder(){}
     Finder(Function* f, Number croot): f(f), croot(croot){ }
+    Finder(std::shared_ptr<Function> f, Number croot): f(f), croot(croot){ }
 
     virtual void update_root() = 0;
     virtual Number root();

@@ -8,11 +8,18 @@ class Biseccion: public Finder{
 protected:
     Number b;
 public:
-
     Biseccion(Function* f, Number a, Number b):
         Finder(f, a),
         b(b) {
-        this->f = std::unique_ptr<Function>(f);
+        auto fb = this->f->f(b);
+        auto fa = this->f->f(a);
+        if( (fb * fa).inner > 0 ){
+            throw std::runtime_error("rango invalido");
+        }
+    }
+    Biseccion(std::shared_ptr<Function> f, Number a, Number b):
+        Finder(f, a),
+        b(b) {
         auto fb = this->f->f(b);
         auto fa = this->f->f(a);
         if( (fb * fa).inner > 0 ){
