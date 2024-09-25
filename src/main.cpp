@@ -434,8 +434,11 @@ std::shared_ptr<Finder> select(std::shared_ptr<GenerativeFunction> func){
     return nullptr;
 }
 
+int test(){
+    return 0;
+}
 
-int main(const int argc, const char* argv[]){
+int notest(){
     bool loop = true;
     while(loop){
         try {
@@ -455,12 +458,18 @@ int main(const int argc, const char* argv[]){
 
             std::cout << "calculando...\n";
             auto root = method->root();
-            std::cout << "raiz aproximada: " << root.inner << std::endl;
+            std::cout << "raiz aproximada: " << root.inner ;
+            std::cout << " f(" << root.inner << ") = " << func->f(root).inner << std::endl;
         }
         catch(std::runtime_error& e) {
             std::cout << "no se pudo encontrar raiz: " << e.what() << std::endl;
         }
         loop = go_on();
+        std::string trash;
+        std::getline(std::cin, trash);
     }
     return 0;
+}
+int main(const int argc, const char* argv[]){
+    return argc == 1 ? notest() : test();
 }

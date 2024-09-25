@@ -14,8 +14,6 @@ public:
 
     Number f(Number x) const override{
         Number n = x - (this->original->f(x) / df(*this->original, x));
-        std::cout << n.inner << std::endl;
-        std::cout << this->original->f(n.inner).inner << std::endl;
         return n;
     }
 };
