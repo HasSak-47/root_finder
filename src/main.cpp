@@ -392,11 +392,11 @@ std::unique_ptr<Finder> punto_fijo(std::shared_ptr<Function> func){
             return this->original->f(x) + x;
         }
     };
-    std::cout << "Quiere especificar funcion[Y/n]";
+    std::cout << "Quiere especificar funcion? [Y/.]";
     char specify;
     std::cin >> specify;
     std::shared_ptr<Function> guesser = nullptr;
-    if(specify){
+    if(specify == 'Y'){
         std::cout << "escriba ecuacion que estimara: ";
         guesser =std::shared_ptr<Function>( get_function() );
 
@@ -453,9 +453,10 @@ int main(const int argc, const char* argv[]){
                 continue;
             }
 
-                auto root = method->root();
-                std::cout << "raiz aproximada: " << root.inner << std::endl;
-            }
+            std::cout << "calculando...\n";
+            auto root = method->root();
+            std::cout << "raiz aproximada: " << root.inner << std::endl;
+        }
         catch(std::runtime_error& e) {
             std::cout << "no se pudo encontrar raiz: " << e.what() << std::endl;
         }

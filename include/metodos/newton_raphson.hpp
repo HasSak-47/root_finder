@@ -2,6 +2,7 @@
 #define NEWTON_RAPHSON_HPP
 
 #include "primitives.hpp"
+#include <iostream>
 #include <memory>
 
 class NewtonGuesser : Function{
@@ -12,7 +13,10 @@ public:
     NewtonGuesser(std::shared_ptr<Function> f): original(f){}
 
     Number f(Number x) const override{
-        return x - (this->original->f(x) / df(*this->original, x));
+        Number n = x - (this->original->f(x) / df(*this->original, x));
+        std::cout << n.inner << std::endl;
+        std::cout << this->original->f(n.inner).inner << std::endl;
+        return n;
     }
 };
 

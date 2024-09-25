@@ -1,7 +1,4 @@
-#include <iostream>
 #include <metodos/metodo_de_biseccion.hpp>
-#include <ostream>
-#include <thread>
 
 void Biseccion::update_root(){
     auto& a = this->croot;
@@ -9,10 +6,6 @@ void Biseccion::update_root(){
     Number fb = f->f(b);
     Number c = (a + b) / 2;
     Number fc = f->f(c);
-    std::cout << std::endl;
-
-    using namespace std::chrono;
-    std::this_thread::sleep_for(100ms);
 
     if ( (fc * fa).is_negative() ) b = c;
     if ( (fc * fb).is_negative() ) a = c;
